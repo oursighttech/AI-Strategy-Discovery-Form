@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Strategy Call Discovery Form — Oursight Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #050a14;
+    --surface: #0b1525;
+    --surface2: #101e33;
+    --border: rgba(79,140,255,0.15);
+    --border-hover: rgba(79,140,255,0.4);
+    --blue: #4F8CFF;
+    --blue-deep: #2563FF;
+    --blue-glow: rgba(79,140,255,0.12);
+    --text: #e8eef8;
+    --text-muted: #6b82a8;
+    --text-dim: #3d5478;
+    --white: #ffffff;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 0%, rgba(37,99,255,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 100%, rgba(79,140,255,0.06) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(79,140,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,140,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 52px 0 44px;
+    text-align: center;
+    animation: fadeUp 0.8s ease both;
+  }
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .logo-svg {
+    width: 52px; height: 30px;
+    filter: drop-shadow(0 0 10px rgba(79,140,255,0.5));
+  }
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .header-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: rgba(79,140,255,0.08);
+    border: 1px solid rgba(79,140,255,0.2);
+    border-radius: 40px;
+    padding: 5px 14px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 5vw, 2.8rem);
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  .header h1 span {
+    background: linear-gradient(120deg, var(--blue) 0%, #7cb3ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 2px;
+    background: var(--surface2);
+    border-radius: 2px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--blue-deep), var(--blue));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px rgba(79,140,255,0.6);
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+    transition: border-color 0.3s;
+  }
+  .section:hover { border-color: rgba(79,140,255,0.25); }
+
+  .section-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
+  }
+  .section-num {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+  .section-body {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  /* FIELDS */
+  .field { display: flex; flex-direction: column; gap: 7px; }
+  .field-label {
+    font-weight: 500;
+    font-size: 0.88rem;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+  .qnum {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--blue);
+    min-width: 22px;
+  }
+  .field-hint {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.25s, box-shadow 0.25s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(79,140,255,0.12);
+  }
+  input::placeholder, textarea::placeholder { color: var(--text-dim); }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* ═══════════════════════════════════════════════════
+     OPTION BUTTONS — pure CSS approach, no JS needed
+     The real checkbox/radio IS visible inside the label.
+     We style it to look custom using appearance:none.
+  ═══════════════════════════════════════════════════ */
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .options-grid.single-col { grid-template-columns: 1fr; }
+
+  @media (max-width: 520px) {
+    .options-grid { grid-template-columns: 1fr; }
+  }
+
+  /* The label wrapper */
+  .opt-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .opt-label:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+    background: var(--blue-glow);
+  }
+
+  /* The actual input — styled to look like a custom control */
+  .opt-label input[type="radio"],
+  .opt-label input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 2px solid var(--text-dim);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .opt-label input[type="checkbox"] {
+    border-radius: 4px;
+  }
+
+  /* Dot / tick inside the control */
+  .opt-label input[type="radio"]::after,
+  .opt-label input[type="checkbox"]::after {
+    content: '';
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .opt-label input[type="radio"]::after {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .opt-label input[type="checkbox"]::after {
+    content: '✓';
+    font-size: 11px;
+    font-weight: 900;
+    color: #fff;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* CHECKED states */
+  .opt-label input[type="radio"]:checked,
+  .opt-label input[type="checkbox"]:checked {
+    border-color: var(--blue);
+    background: var(--blue);
+  }
+  .opt-label input[type="radio"]:checked::after,
+  .opt-label input[type="checkbox"]:checked::after {
+    opacity: 1;
+  }
+
+  /* Highlight the whole label when checked — using :has() */
+  .opt-label:has(input:checked) {
+    border-color: var(--blue);
+    background: rgba(79,140,255,0.1);
+    color: var(--text);
+  }
+
+  /* Fallback for browsers without :has() — JS adds .checked class */
+  .opt-label.checked {
+    border-color: var(--blue);
+    background: rgba(79,140,255,0.1);
+    color: var(--text);
+  }
+
+  /* Other reveal */
+  .other-reveal {
+    display: none;
+    margin-top: 8px;
+  }
+  .other-reveal.visible { display: block; }
+
+  /* SUBMIT */
+  .submit-wrap {
+    margin-top: 36px;
+    text-align: center;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .btn-submit {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 48px;
+    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue) 100%);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 4px 24px rgba(37,99,255,0.35);
+  }
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 36px rgba(37,99,255,0.5);
+  }
+  .btn-submit:active { transform: translateY(0); }
+  .btn-arrow {
+    width: 20px; height: 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+  }
+  .btn-submit:hover .btn-arrow { transform: translateX(3px); }
+  .submit-note {
+    margin-top: 12px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+
+  /* FOOTER */
+  .form-footer {
+    margin-top: 52px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .footer-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .footer-logo-wrap svg { width: 36px; height: 21px; opacity: 0.7; }
+  .footer-logo-wrap span {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--blue); }
+  .footer-copy { font-size: 0.72rem; color: var(--text-dim); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section:nth-child(1){animation-delay:0.05s}
+  .section:nth-child(2){animation-delay:0.1s}
+  .section:nth-child(3){animation-delay:0.15s}
+  .section:nth-child(4){animation-delay:0.2s}
+  .section:nth-child(5){animation-delay:0.25s}
+  .section:nth-child(6){animation-delay:0.3s}
+  .section:nth-child(7){animation-delay:0.35s}
+
+  @media (max-width: 600px) {
+    .section-body { padding: 18px; }
+    .section-header { padding: 16px 18px; }
+    .header { padding: 36px 0 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header class="header">
+    <div class="logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70" cy="70" r="50" fill="none" stroke="white" stroke-width="14"/>
+        <polyline points="130,35 165,70 130,105" fill="none" stroke="#4F8CFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="160,35 195,70 160,105" fill="none" stroke="#2563FF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-name">Oursight Technologies</span>
+    </div>
+    <div class="header-badge">Strategy Call Discovery</div>
+    <h1>AI Strategy<br/><span>Discovery Form</span></h1>
+    <p>Help us understand your business so we can deliver practical, results-driven solutions tailored to your goals.</p>
+  </header>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+  <form id="main-form"
+        action="https://formsubmit.co/hello@oursighttech.com"
+        method="POST">
+
+    <!-- FormSubmit config -->
+    <input type="hidden" name="_subject" value="New AI Strategy Call Request — Oursight Technologies"/>
+    <input type="hidden" name="_captcha" value="false"/>
+    <input type="hidden" name="_template" value="table"/>
+
+    <!-- ── 01 Business Information ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-title">Business Information</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">1.</span> Business Name *</label>
+          <input type="text" name="01_Business_Name" placeholder="Your business name" required/>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">2.</span> Website</label>
+          <input type="text" name="02_Website" placeholder="https://yourwebsite.com"/>
+          <input type="text" name="02_Social_Media" placeholder="@yourhandle or social URLs" style="margin-top:8px"/>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">3.</span> Industry / Niche</label>
+          <input type="text" name="03_Industry" placeholder="e.g. Healthcare, E-commerce, Real Estate…"/>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">4.</span> Company Size</label>
+          <div class="options-grid single-col">
+            <label class="opt-label"><input type="radio" name="04_Company_Size" value="Solo Founder"/> Solo Founder</label>
+            <label class="opt-label"><input type="radio" name="04_Company_Size" value="2–10 Employees"/> 2–10 Employees</label>
+            <label class="opt-label"><input type="radio" name="04_Company_Size" value="11–50 Employees"/> 11–50 Employees</label>
+            <label class="opt-label"><input type="radio" name="04_Company_Size" value="51–200 Employees"/> 51–200 Employees</label>
+            <label class="opt-label"><input type="radio" name="04_Company_Size" value="200+ Employees"/> 200+ Employees</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">5.</span> Your Name &amp; Role</label>
+          <input type="text" name="05_Name_Role" placeholder="e.g. Jane Smith, Marketing Director"/>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">6.</span> Best Contact Email *</label>
+          <input type="email" name="06_Email" placeholder="you@company.com" required/>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">7.</span> Phone Number</label>
+          <input type="tel" name="07_Phone" placeholder="+1 (555) 000-0000"/>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 02 About the Business ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-title">About the Business</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">8.</span> What does your business do?</label>
+          <textarea name="08_Business_Description" placeholder="Describe your products, services, and how you deliver value…"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">9.</span> Who is your target audience or ideal customer?</label>
+          <textarea name="09_Target_Audience" placeholder="Describe your ideal customer, demographics, pain points…"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">10.</span> What are your biggest business goals right now?</label>
+          <div class="options-grid">
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Generate more leads"/> Generate more leads</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Increase sales"/> Increase sales</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Improve operations"/> Improve operations</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Automate tasks"/> Automate tasks</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Improve customer experience"/> Improve customer experience</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Build a stronger brand"/> Build a stronger brand</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Launch a website/platform"/> Launch a website/platform</label>
+            <label class="opt-label"><input type="checkbox" name="10_Goals[]" value="Train team on AI"/> Train team on AI</label>
+            <label class="opt-label" id="goals-other-trigger"><input type="checkbox" name="10_Goals[]" value="Other" data-reveals="goals-other"/> Other</label>
+          </div>
+          <div class="other-reveal" id="goals-other">
+            <input type="text" name="10_Goals_Other" placeholder="Please describe…"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 03 Current Challenges ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-title">Current Challenges</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">11.</span> What are the biggest challenges your business is facing today?</label>
+          <textarea name="11_Challenges" placeholder="Share your current pain points and obstacles…"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">12.</span> What tasks or processes currently take too much time?</label>
+          <textarea name="12_Time_Consuming" placeholder="e.g. manual data entry, customer follow-ups, reporting…"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">13.</span> Have you used AI tools before?</label>
+          <div class="options-grid single-col">
+            <label class="opt-label"><input type="radio" name="13_AI_Experience" value="Yes" data-reveals="ai-tools-wrap"/> Yes</label>
+            <label class="opt-label"><input type="radio" name="13_AI_Experience" value="No"/> No</label>
+            <label class="opt-label"><input type="radio" name="13_AI_Experience" value="A little"/> A little</label>
+          </div>
+          <div class="other-reveal" id="ai-tools-wrap">
+            <label style="font-size:0.82rem;color:var(--text-muted);display:block;margin-bottom:6px;">If yes, which tools?</label>
+            <textarea name="13_AI_Tools_Used" placeholder="e.g. ChatGPT, Midjourney, Zapier AI…" style="min-height:70px"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 04 Technology & Systems ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-title">Technology &amp; Systems</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">14.</span> Which tools/platforms does your business currently use?</label>
+          <span class="field-hint">Check all that apply</span>
+          <div class="options-grid">
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="CRM (HubSpot, Salesforce…)"/> CRM (HubSpot, Salesforce…)</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Google Workspace"/> Google Workspace</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Microsoft 365"/> Microsoft 365</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="ChatGPT / Claude"/> ChatGPT / Claude</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Zapier / Automation Tools"/> Zapier / Automation Tools</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Notion"/> Notion</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Shopify"/> Shopify</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="WordPress"/> WordPress</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Social Media Scheduling"/> Social Media Scheduling</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Email Marketing Tools"/> Email Marketing Tools</label>
+            <label class="opt-label"><input type="checkbox" name="14_Tools[]" value="Other" data-reveals="tools-other"/> Other</label>
+          </div>
+          <div class="other-reveal" id="tools-other">
+            <input type="text" name="14_Tools_Other" placeholder="List any other tools…"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 05 Services Interest ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-title">Services Interest</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">15.</span> Which Oursight Technologies services are you most interested in?</label>
+          <div class="options-grid">
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="AI Consulting"/> AI Consulting</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="AI Automation"/> AI Automation</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="Website Development"/> Website Development</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="Branding &amp; Design"/> Branding &amp; Design</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="Tech Education / Training"/> Tech Education / Training</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="Workflow Optimization"/> Workflow Optimization</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="AI Chatbots"/> AI Chatbots</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="Business Systems Setup"/> Business Systems Setup</label>
+            <label class="opt-label"><input type="checkbox" name="15_Services[]" value="Other" data-reveals="services-other"/> Other</label>
+          </div>
+          <div class="other-reveal" id="services-other">
+            <input type="text" name="15_Services_Other" placeholder="Describe the service you need…"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 06 AI & Growth Readiness ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-title">AI &amp; Growth Readiness</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">16.</span> What would success look like after working with us?</label>
+          <textarea name="16_Success_Definition" placeholder="Describe your ideal outcome in 90 days or less…"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">17.</span> What's your estimated budget for this project?</label>
+          <div class="options-grid single-col">
+            <label class="opt-label"><input type="radio" name="17_Budget" value="Under $500"/> Under $500</label>
+            <label class="opt-label"><input type="radio" name="17_Budget" value="$500–$2,000"/> $500 – $2,000</label>
+            <label class="opt-label"><input type="radio" name="17_Budget" value="$2,000–$5,000"/> $2,000 – $5,000</label>
+            <label class="opt-label"><input type="radio" name="17_Budget" value="$5,000–$10,000"/> $5,000 – $10,000</label>
+            <label class="opt-label"><input type="radio" name="17_Budget" value="$10,000+"/> $10,000+</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">18.</span> How soon are you looking to get started?</label>
+          <div class="options-grid single-col">
+            <label class="opt-label"><input type="radio" name="18_Timeline" value="ASAP"/> ASAP</label>
+            <label class="opt-label"><input type="radio" name="18_Timeline" value="Within 30 days"/> Within 30 days</label>
+            <label class="opt-label"><input type="radio" name="18_Timeline" value="1–3 months"/> 1–3 months</label>
+            <label class="opt-label"><input type="radio" name="18_Timeline" value="Just exploring options"/> Just exploring options</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 07 Final Questions ── -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-title">Final Questions</div>
+      </div>
+      <div class="section-body">
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">19.</span> Is there anything else we should know before the strategy call?</label>
+          <textarea name="19_Additional_Info" placeholder="Share anything else that might help us prepare for your call…"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label"><span class="qnum">20.</span> How did you hear about Oursight Technologies?</label>
+          <div class="options-grid">
+            <label class="opt-label"><input type="radio" name="20_Source" value="LinkedIn"/> LinkedIn</label>
+            <label class="opt-label"><input type="radio" name="20_Source" value="Instagram"/> Instagram</label>
+            <label class="opt-label"><input type="radio" name="20_Source" value="X / Twitter"/> X / Twitter</label>
+            <label class="opt-label"><input type="radio" name="20_Source" value="Referral"/> Referral</label>
+            <label class="opt-label"><input type="radio" name="20_Source" value="Website"/> Website</label>
+            <label class="opt-label"><input type="radio" name="20_Source" value="YouTube"/> YouTube</label>
+            <label class="opt-label"><input type="radio" name="20_Source" value="Other" data-reveals="source-other"/> Other</label>
+          </div>
+          <div class="other-reveal" id="source-other">
+            <input type="text" name="20_Source_Other" placeholder="Please specify…"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-wrap">
+      <button type="submit" class="btn-submit">
+        Submit My Strategy Form
+        <span class="btn-arrow">→</span>
+      </button>
+      <p class="submit-note">🔒 Your information is private and never shared.</p>
+    </div>
+
+  </form>
+
+  <footer class="form-footer">
+    <div class="footer-logo-wrap">
+      <svg viewBox="0 0 240 140" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="70" cy="70" r="50" fill="none" stroke="white" stroke-width="14"/>
+        <polyline points="130,35 165,70 130,105" fill="none" stroke="#4F8CFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="160,35 195,70 160,105" fill="none" stroke="#2563FF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Oursight Technologies</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.oursighttech.com" target="_blank">🌐 oursighttech.com</a>
+      <a href="mailto:hello@oursighttech.com">📧 hello@oursighttech.com</a>
+      <a href="https://linkedin.com/company/oursighttech" target="_blank">LinkedIn</a>
+      <a href="https://instagram.com/oursighttech" target="_blank">Instagram</a>
+    </div>
+    <p class="footer-copy">© 2025 Oursight Technologies. All rights reserved. Move Forward With Technology.</p>
+  </footer>
+
+</div>
+
+<script>
+// Minimal JS — only for:
+// 1. "Other" reveal toggle
+// 2. Label highlight fallback for browsers without :has()
+// 3. Progress bar
+
+const hasSupport = CSS.supports('selector(:has(input))');
+
+document.querySelectorAll('.opt-label input').forEach(function(input) {
+  input.addEventListener('change', function() {
+
+    // Fallback highlight for browsers without :has()
+    if (!hasSupport) {
+      if (input.type === 'radio') {
+        // Clear all in same name group
+        document.querySelectorAll('input[name="' + input.name + '"]').forEach(function(r) {
+          r.closest('.opt-label').classList.remove('checked');
+        });
+      }
+      if (input.checked) {
+        input.closest('.opt-label').classList.add('checked');
+      } else {
+        input.closest('.opt-label').classList.remove('checked');
+      }
+    }
+
+    // Handle "Other" reveal via data-reveals attribute
+    var revealsId = input.dataset.reveals;
+    if (revealsId) {
+      var revealEl = document.getElementById(revealsId);
+      if (revealEl) {
+        if (input.type === 'checkbox') {
+          revealEl.classList.toggle('visible', input.checked);
+        } else if (input.type === 'radio' && input.checked) {
+          revealEl.classList.add('visible');
+        }
+      }
+    }
+
+    // Hide reveal if a different radio in same group was picked
+    if (input.type === 'radio' && input.checked) {
+      document.querySelectorAll('input[name="' + input.name + '"]').forEach(function(r) {
+        if (r !== input && r.dataset.reveals) {
+          var el = document.getElementById(r.dataset.reveals);
+          if (el) el.classList.remove('visible');
+        }
+      });
+    }
+
+    updateProgress();
+  });
+});
+
+function updateProgress() {
+  var textInputs = document.querySelectorAll('input[type=text], input[type=email], input[type=tel], textarea');
+  var checked = document.querySelectorAll('input[type=radio]:checked, input[type=checkbox]:checked');
+  var filled = 0;
+  textInputs.forEach(function(i) { if (i.value.trim()) filled++; });
+  filled += checked.length * 2;
+  var total = textInputs.length * 1 + 20 * 2;
+  var pct = Math.min(100, Math.round((filled / total) * 100));
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+document.addEventListener('input', updateProgress);
+</script>
+
+</body>
+</html>
